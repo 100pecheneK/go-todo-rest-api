@@ -4,7 +4,10 @@ go 1.19
 
 require github.com/spf13/viper v1.15.0
 
-require github.com/joho/godotenv v1.4.0 // indirect
+require (
+	github.com/joho/godotenv v1.4.0 // indirect
+	github.com/sirupsen/logrus v1.9.0 // indirect
+)
 
 require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
