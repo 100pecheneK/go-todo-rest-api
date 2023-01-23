@@ -1,8 +1,12 @@
 package service
 
-import "github.com/100pecheneK/go-todo-rest-api.git/pkg/repository"
+import (
+	"github.com/100pecheneK/go-todo-rest-api.git/internal/models"
+	"github.com/100pecheneK/go-todo-rest-api.git/pkg/repository"
+)
 
 type Authorization interface {
+	CreateUser(user models.User) (int, error)
 }
 type TodoList interface {
 }
@@ -15,5 +19,7 @@ type Service struct {
 }
 
 func NewService(repos *repository.Repository) *Service {
-	return &Service{}
+	return &Service{
+		Authorization: NewAuthService(repos.Authorization),
+	}
 }
