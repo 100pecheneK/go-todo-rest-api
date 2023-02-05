@@ -17,12 +17,17 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
+	logrus.Println("initializing configs")
 	if err := initConfig(); err != nil {
 		logrus.Fatalf("error initializing configs: %s", err.Error())
 	}
+	logrus.Println("configs initialized")
+	logrus.Println("loading env variables")
 	if err := godotenv.Load(); err != nil {
 		logrus.Fatalf("error loading env variables: %s", err.Error())
 	}
+	logrus.Println("env variables loaded")
+	logrus.Println("initializing db connect")
 	db, err := repository.NewPostgresDB(repository.Config{
 		Host:     viper.GetString("psql.host"),
 		Port:     viper.GetString("psql.port"),
