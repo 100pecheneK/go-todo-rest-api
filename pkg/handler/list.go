@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/100pecheneK/go-todo-rest-api.git/internal/models"
 	"github.com/gin-gonic/gin"
@@ -47,6 +48,25 @@ func (h *Handler) getAllLists(c *gin.Context) {
 	c.JSON(http.StatusOK, getAllListsResponse{Data: lists})
 
 }
-func (h *Handler) getListById(c *gin.Context) {}
-func (h *Handler) updateList(c *gin.Context)  {}
-func (h *Handler) deleteList(c *gin.Context)  {}
+func (h *Handler) getListById(c *gin.Context) {
+
+	userId, err := getUserId(c)
+	if err != nil {
+		return
+	}
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+	list, err := h.service.TodoList.GetById(userId, id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, list)
+}
+func (h *Handler) updateList(c *gin.Context) {}
+func (h *Handler) deleteList(c *gin.Context) {}

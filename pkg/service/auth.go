@@ -58,7 +58,7 @@ func (*AuthService) ParseToken(accessToken string) (int, error) {
 		return []byte(signingKey), nil
 	})
 	if err != nil {
-		return 0, nil
+		return 0, err
 	}
 	claims, ok := token.Claims.(*tokenClaims)
 	if !ok {
