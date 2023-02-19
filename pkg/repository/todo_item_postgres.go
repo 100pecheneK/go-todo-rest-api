@@ -75,3 +75,20 @@ ti.id=$1 AND ul.user_id=$2
 	}
 	return item, nil
 }
+
+func (r *TodoItemPostgres) Delete(userId, id int) error {
+	query := fmt.Sprintf(`DELETE FROM %s ti 
+ USING %s li, %s ul 
+ WHERE
+ ti.id=li.todo_id 
+ AND
+ li.list_id = ul.list_id
+ AND 
+ ul.user_id=$1 
+ AND 
+ ti.id=$2`, todoItemsTable, listsItemsTable, usersListsTable)
+
+	_, err := r.db.Exec(query, userId, id)
+
+	return err
+}
