@@ -23,6 +23,18 @@ type ListsItem struct {
 	ListId int
 	ItemId int
 }
+type UpdateItemInput struct {
+	Title       *string `json:"title"`
+	Desctiprion *string `json:"description"`
+	Done        *bool   `json:"done"`
+}
+
+func (i UpdateItemInput) Validate() error {
+	if i.Title == nil && i.Desctiprion == nil && i.Done == nil {
+		return errors.New("update structure has no values")
+	}
+	return nil
+}
 
 type UpdateListInput struct {
 	Title       *string `json:"title"`

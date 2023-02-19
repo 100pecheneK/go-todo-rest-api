@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/100pecheneK/go-todo-rest-api.git/internal/models"
 	"github.com/jmoiron/sqlx"
@@ -90,5 +91,41 @@ func (r *TodoItemPostgres) Delete(userId, id int) error {
 
 	_, err := r.db.Exec(query, userId, id)
 
+	return err
+}
+
+func (r *TodoItemPostgres) Update(userId, id int, input models.UpdateItemInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	if input.Title != nil {
+		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
+		args = append(args, *input.Title)
+		argId++
+	}
+	if input.Desctiprion != nil {
+		setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
+		args = append(args, *input.Desctiprion)
+		argId++
+	}
+	if input.Done != nil {
+		setValues = append(setValues, fmt.Sprintf("done=$%d", argId))
+		args = append(args, *input.Done)
+		argId++
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf(`UPDATE %s ti SET %s 
+	FROM %s li, %s ul 
+	WHERE
+  ti.id=li.todo_id AND ul.list_id=li.list_id
+  AND ul.user_id=$%d
+  AND ti.id=$%d
+	`,
+		todoItemsTable, setQuery, listsItemsTable, usersListsTable, argId, argId+1)
+	args = append(args, userId, id)
+	_, err := r.db.Exec(query, args...)
 	return err
 }
