@@ -22,3 +22,22 @@ select * from schema_migrations;
 update schema_migrations set version='000001', dirty=false;
 
 ```
+
+# API 
+| METHOD |              URI              | DESCRIPTION |
+| ------ | ----------------------------- | ----------- |
+| POST   | /auth/sign-up                 | signUp      |
+| POST   | /auth/sign-in                 | signIn      |
+| POST   | /api/lists/                   | createList  |
+| GET    | /api/lists/                   | getAllLists |
+| GET    | /api/lists/:id                | getListById |
+| PUT    | /api/lists/:id                | updateList  |
+| DELETE | /api/lists/:id                | deleteList  |
+| POST   | /api/lists/:id/items/         | createItem  |
+| GET    | /api/lists/:id/items/         | getAllItems |
+| GET    | /api/lists/:id/items/:item_id | getItemById |
+| PUT    | /api/lists/:id/items/:item_id | updateItem  |
+| DELETE | /api/lists/:id/items/:item_id | deleteItem  |
+| GET    | /api/items/:id                | getItemById |
+| PUT    | /api/items/:id                | updateItem  |
+| DELETE | /api/items/:id                | deleteItem  |
