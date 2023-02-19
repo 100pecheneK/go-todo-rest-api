@@ -52,6 +52,22 @@ func (h *Handler) getAllItems(c *gin.Context) {
 	c.JSON(http.StatusOK, items)
 
 }
-func (h *Handler) getItemById(c *gin.Context) {}
-func (h *Handler) updateItem(c *gin.Context)  {}
-func (h *Handler) deleteItem(c *gin.Context)  {}
+func (h *Handler) getItemById(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		return
+	}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid todo id param")
+		return
+	}
+	item, err := h.service.TodoItem.GetById(userId, id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, item)
+}
+func (h *Handler) updateItem(c *gin.Context) {}
+func (h *Handler) deleteItem(c *gin.Context) {}

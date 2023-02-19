@@ -20,6 +20,7 @@ type TodoList interface {
 type TodoItem interface {
 	Create(userId, listId int, input models.TodoItem) (int, error)
 	GetAll(userId, listId int) ([]models.TodoItem, error)
+	GetById(userId, id int) (models.TodoItem, error)
 }
 type Service struct {
 	Authorization
