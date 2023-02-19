@@ -18,7 +18,11 @@ func (s *Server) Run(port string, handler http.Handler) error {
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 	}
-	return s.httpServer.ListenAndServe()
+	err := s.httpServer.ListenAndServe()
+	if err != http.ErrServerClosed {
+		return err
+	}
+	return nil
 }
 
 func (s *Server) Stop(ctx context.Context) error {

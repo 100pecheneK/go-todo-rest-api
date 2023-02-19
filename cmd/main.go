@@ -1,8 +1,10 @@
 package main
 
 import (
-	"log"
+	"context"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/100pecheneK/go-todo-rest-api.git/internal/server"
 	"github.com/100pecheneK/go-todo-rest-api.git/pkg/handler"
@@ -47,11 +49,27 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	srv := new(server.Server)
-	port := viper.GetString("port")
-	log.Println("starting server on port:", port)
-	if err := srv.Run(port, handlers.InitRoutes()); err != nil {
-		log.Fatalf("error while running http server: %s", err.Error())
+	go func() {
+		port := viper.GetString("port")
+		logrus.Println("starting server on port:", port)
+		if err := srv.Run(port, handlers.InitRoutes()); err != nil {
+			logrus.Fatalf("error while running http server: %s", err.Error())
+		}
+	}()
+
+	logrus.Print("server started!")
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+	logrus.Print("server shutting down")
+	if err := srv.Stop(context.Background()); err != nil {
+		logrus.Errorf("error server: %s", err.Error())
 	}
+	logrus.Print("db connection closing")
+	if err := db.Close(); err != nil {
+		logrus.Errorf("error on db connection close: %s", err.Error())
+	}
+	logrus.Print("server stoped")
 }
 
 func initConfig() error {
