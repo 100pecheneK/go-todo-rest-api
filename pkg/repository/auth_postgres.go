@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/100pecheneK/go-todo-rest-api.git/internal/models"
 	"github.com/jmoiron/sqlx"
@@ -20,7 +22,11 @@ func (r *AuthPostgres) CreateUser(user models.User) (int, error) {
 	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) values ($1, $2, $3) RETURNING id", userTable)
 
 	row := r.db.QueryRow(query, user.Name, user.Username, user.Password)
+
 	if err := row.Scan(&id); err != nil {
+		if strings.HasPrefix(err.Error(), "pq: duplicate key value violates unique constraint \"users_username_key\"") {
+			return 0, errors.New("User with this username already exist")
+		}
 		return 0, err
 	}
 

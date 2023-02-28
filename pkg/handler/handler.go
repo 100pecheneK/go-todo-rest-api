@@ -4,6 +4,10 @@ import (
 	"github.com/100pecheneK/go-todo-rest-api.git/pkg/service"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
+	_ "github.com/100pecheneK/go-todo-rest-api.git/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Handler struct {
@@ -23,6 +27,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	corsConfig.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 	corsConfig.AddAllowMethods("OPTIONS", "GET", "PUT", "POST", "DELETE")
 	router.Use(cors.New(corsConfig))
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	auth := router.Group("/auth")
 	{
