@@ -11,9 +11,10 @@ import (
 )
 
 const (
-	salt       = "asdfghqwer"
-	signingKey = "lkjhoiuyqw"
-	tokenExp   = 12 * time.Hour
+	salt            = "asdfghqwer"
+	signingKey      = "lkjhoiuyqw"
+	tokenExp        = 12 * time.Hour
+	refreshTokenExp = 30 * 24 * time.Hour
 )
 
 type TokenManager interface {
@@ -63,7 +64,7 @@ func (s *AuthService) createSession(id int) (accessToken, refreshToken string, e
 	if err != nil {
 		return
 	}
-	err = s.repo.SetSession(id, refreshToken, time.Now().Add(tokenExp))
+	err = s.repo.SetSession(id, refreshToken, time.Now().Add(refreshTokenExp))
 	if err != nil {
 		return
 	}
