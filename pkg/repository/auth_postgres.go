@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/100pecheneK/go-todo-rest-api.git/internal/models"
 	"github.com/jmoiron/sqlx"
@@ -38,4 +39,9 @@ func (r *AuthPostgres) GetUser(username, password string) (models.User, error) {
 	query := fmt.Sprintf("SELECT id FROM %s WHERE username=$1 AND password_hash=$2", userTable)
 	err := r.db.Get(&user, query, username, password)
 	return user, err
+}
+func (r *AuthPostgres) SetSession(id int, refreshToken string, expiresAt time.Time) error {
+	query := fmt.Sprintf("UPDATE %s SET refreshToken=$1, expiresAt=$2 WHERE id=$3", userTable)
+	_, err := r.db.Exec(query, refreshToken, expiresAt.String(), id)
+	return err
 }

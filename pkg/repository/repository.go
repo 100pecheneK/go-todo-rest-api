@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/100pecheneK/go-todo-rest-api.git/internal/models"
 	"github.com/jmoiron/sqlx"
 )
@@ -8,6 +10,7 @@ import (
 type Authorization interface {
 	CreateUser(user models.User) (int, error)
 	GetUser(username, password string) (models.User, error)
+	SetSession(id int, refreshToken string, expiresAt time.Time) error
 }
 type TodoList interface {
 	Create(userId int, list models.TodoList) (int, error)
