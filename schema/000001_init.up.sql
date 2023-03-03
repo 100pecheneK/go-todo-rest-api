@@ -4,7 +4,7 @@ CREATE TABLE users
   name varchar(255) not null,
   username varchar(255) not null unique,
   password_hash varchar(255) not null,
-  refreshToken varchar(255),
+  refreshToken varchar(255) unique,
   expiresAt varchar(255)
 );
 

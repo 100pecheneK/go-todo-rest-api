@@ -49,6 +49,14 @@ func (s *AuthService) ParseToken(accessToken string) (int, error) {
 	return s.tokenManager.Parse(accessToken)
 }
 
+func (s *AuthService) RefreshTokens(refreshToken string) (string, string, error) {
+	user, err := s.repo.GetByRefreshToken(refreshToken)
+	if err != nil {
+		return "", "", err
+	}
+	return s.createSession(user.Id)
+}
+
 func (s *AuthService) generatePasswordHash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))

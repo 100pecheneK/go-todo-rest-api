@@ -39,6 +39,9 @@ type signInInput struct {
 	Password string `json:"password"`
 }
 
+type refreshInput struct {
+	RefreshToken string `json:"refreshToken"`
+}
 type tokenResponse struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
@@ -59,6 +62,17 @@ func (h *Handler) signIn(c *gin.Context) {
 	c.JSON(http.StatusOK, tokenResponse{accessToken, refreshToken})
 }
 
-func (*Handler) refresh(c *gin.Context) {
+func (h *Handler) refresh(c *gin.Context) {
+	var input refreshInput
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
+	accessToken, refreshToken, err := h.service.Authorization.RefreshTokens(input.RefreshToken)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, tokenResponse{accessToken, refreshToken})
 }

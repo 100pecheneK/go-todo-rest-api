@@ -9,6 +9,7 @@ type Authorization interface {
 	CreateUser(user models.User) (int, error)
 	GenerateToken(username, password string) (string, string, error)
 	ParseToken(token string) (int, error)
+	RefreshTokens(refreshToken string) (string, string, error)
 }
 type TodoList interface {
 	Create(userId int, list models.TodoList) (int, error)

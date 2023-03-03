@@ -45,3 +45,9 @@ func (r *AuthPostgres) SetSession(id int, refreshToken string, expiresAt time.Ti
 	_, err := r.db.Exec(query, refreshToken, expiresAt.String(), id)
 	return err
 }
+func (r *AuthPostgres) GetByRefreshToken(refreshToken string) (models.User, error) {
+	var user models.User
+	query := fmt.Sprintf("SELECT id FROM %s WHERE refreshToken=$1", userTable)
+	err := r.db.Get(&user, query, refreshToken)
+	return user, err
+}
