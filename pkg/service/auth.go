@@ -57,6 +57,10 @@ func (s *AuthService) RefreshTokens(refreshToken string) (string, string, error)
 	return s.createSession(user.Id)
 }
 
+func (s *AuthService) GetUser(id int) (models.User, error) {
+	return s.repo.GetUserById(id)
+}
+
 func (s *AuthService) generatePasswordHash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))

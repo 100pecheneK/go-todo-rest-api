@@ -36,8 +36,14 @@ func (r *AuthPostgres) CreateUser(user models.User) (int, error) {
 
 func (r *AuthPostgres) GetUser(username, password string) (models.User, error) {
 	var user models.User
-	query := fmt.Sprintf("SELECT id FROM %s WHERE username=$1 AND password_hash=$2", userTable)
+	query := fmt.Sprintf("SELECT id, username, name FROM %s WHERE username=$1 AND password_hash=$2", userTable)
 	err := r.db.Get(&user, query, username, password)
+	return user, err
+}
+func (r *AuthPostgres) GetUserById(id int) (models.User, error) {
+	var user models.User
+	query := fmt.Sprintf("SELECT username, name FROM %s WHERE id=$1", userTable)
+	err := r.db.Get(&user, query, id)
 	return user, err
 }
 func (r *AuthPostgres) SetSession(id int, refreshToken string, expiresAt time.Time) error {

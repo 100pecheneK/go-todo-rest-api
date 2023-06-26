@@ -76,3 +76,22 @@ func (h *Handler) refresh(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, tokenResponse{accessToken, refreshToken})
 }
+
+func (h *Handler) getUser(c *gin.Context) {
+	var user models.User
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	user, err = h.service.Authorization.GetUser(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"name":     user.Name,
+		"username": user.Username,
+	})
+}
